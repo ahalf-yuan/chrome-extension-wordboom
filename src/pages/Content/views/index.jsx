@@ -1,37 +1,32 @@
 import ReactDOM from 'react-dom';
 import React, { useEffect } from 'react';
 import Translate from './Translate';
+import feichuanSvg from '../../../assets/followIcon/feichuan.svg';
 import './index.css';
 
 function App() {
   useEffect(() => {
-    const listenMessage = (event) => {
-      if (!event.data) return;
-      if (!typeof event.data === 'object') {
-        return;
-      }
-
-      try {
-        const { wordboom_selection } = event.data || {};
-        if (wordboom_selection) {
-          console.log('value =>', wordboom_selection);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    window.addEventListener('message', listenMessage);
-
-    return () => {
-      // cleanup
-      window.removeEventListener('message', listenMessage);
-    };
+    document.addEventListener('wordboom_ee', function (e) {
+      console.log(e.detail);
+    });
+    return () => {};
   }, []);
 
-  return <Translate />;
+  return (
+    <>
+      <img src={feichuanSvg} className="App-logo" alt="logo" />
+    </>
+  );
 }
 
-ReactDOM.render(<App />, window.document.querySelector('#app-container'));
+const interval = setInterval(() => {
+  const wordboom_app = document.querySelector('#wordboom_app');
+
+  if (wordboom_app) {
+    const shadowRoot = wordboom_app.shadowRoot;
+    ReactDOM.render(<App />, shadowRoot);
+    clearInterval(interval);
+  }
+}, 500);
 
 if (module.hot) module.hot.accept();
