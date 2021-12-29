@@ -1,23 +1,25 @@
 import UserSelection from './userSelection';
 import '../views/index.jsx';
 
+const WORDBOOM_ID = 'wordboom_app';
+
 function createShadowdom() {
   const container = document.createElement('div');
-  container.setAttribute('id', 'wordboom_app');
+  container.setAttribute('id', WORDBOOM_ID);
   document.body.appendChild(container);
 
   const shadow = container.attachShadow({ mode: 'open' });
-  // const target = document.querySelector('wordboom_app').shadowRoot;
+  // const target = document.querySelector(WORDBOOM_ID).shadowRoot;
   return shadow;
 }
 
-function createEvent() {
-  var myEvent = new CustomEvent('wordboom_ee', {
+function createEvent(type, detail) {
+  var wordboomEvent = new CustomEvent(type, {
     // objParams就是需要传递的参数，
     // 可以是任意的类型
-    detail: { a: 1 },
+    detail,
   });
-  document.dispatchEvent(myEvent);
+  document.dispatchEvent(wordboomEvent);
 }
 
 function init() {
@@ -31,8 +33,11 @@ function init() {
       if (selectedText.length > 0) {
         // get right bottom pos of the selection
         const { x, y } = userSelection.getPos('end');
-        // todo
-        createEvent();
+        createEvent('wordboom_ee', {
+          x,
+          y,
+          selectedText,
+        });
       }
     }, 100);
   };
@@ -42,6 +47,12 @@ function init() {
   document.onclick = function (ev) {
     // 隐藏弹窗
     // wordboomIframe.hide();
+    createEvent('wordboom_ee_hidden');
+  };
+
+  document.getElementById(WORDBOOM_ID).onmouseup = function (e) {
+    // e.preventDefault();
+    e.stopPropagation();
   };
 }
 
@@ -52,7 +63,6 @@ function init() {
  * render -> views folder
  */
 window.onload = function () {
-  setTimeout(() => {
-    init();
-  }, 500);
+  // console.log(chrome.runtime.getManifest().id);
+  init();
 };

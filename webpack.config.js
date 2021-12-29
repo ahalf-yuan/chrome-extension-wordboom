@@ -65,6 +65,37 @@ var options = {
         // look for .css or .scss files
         test: /\.(css|scss)$/,
         // in the `src` directory
+        include: [path.resolve(__dirname, 'src/pages/Content')],
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              insert: function (linkTag) {
+                setTimeout(() => {
+                  const parent =
+                    document.querySelector('#wordboom_app').shadowRoot;
+                  parent.appendChild(linkTag);
+                }, 3000);
+              },
+            },
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+      {
+        // look for .css or .scss files
+        test: /\.(css|scss)$/,
+        // in the `src` directory
+        include: [path.resolve(__dirname, 'src/')],
+        exclude: [path.resolve(__dirname, 'src/pages/Content')],
         use: [
           {
             loader: 'style-loader',
@@ -168,6 +199,15 @@ var options = {
       patterns: [
         {
           from: 'src/assets/img/icon-34.png',
+          to: path.join(__dirname, 'build'),
+          force: true,
+        },
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/assets/content/feichuan.svg',
           to: path.join(__dirname, 'build'),
           force: true,
         },

@@ -1,20 +1,39 @@
 import ReactDOM from 'react-dom';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+// import { Button, Image } from 'antd';
 import Translate from './Translate';
-import feichuanSvg from '../../../assets/followIcon/feichuan.svg';
 import './index.css';
 
 function App() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [show, setShow] = useState(false);
+
   useEffect(() => {
     document.addEventListener('wordboom_ee', function (e) {
       console.log(e.detail);
+      setShow(true);
+      const { x, y, selectedText } = e.detail;
+      setPos({ x, y });
+    });
+
+    document.addEventListener('wordboom_ee_hidden', function (e) {
+      setShow(false);
     });
     return () => {};
   }, []);
 
+  const url = chrome.runtime.getURL('feichuan.svg');
+
   return (
     <>
-      <img src={feichuanSvg} className="App-logo" alt="logo" />
+      {show && (
+        <img
+          src={url}
+          style={{ left: pos.x, top: pos.y }}
+          className="App-logo"
+          alt="logo"
+        />
+      )}
     </>
   );
 }
