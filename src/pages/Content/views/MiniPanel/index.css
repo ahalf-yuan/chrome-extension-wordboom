@@ -1,6 +1,64 @@
 .content-page-wrapper {
+    box-shadow: rgba(0,0,0,80%) 0 4px 23px -6px;
+}
+
+.youdao-header {
+    display: flex;
+}
+
+.youdao-panel {
+    color: #666;
+    font-size: 12px;
+}
+
+.youdao-panel .web-details {
+    padding-inline-start: 20px
+}
+
+.youdao-panel .phonetic span {
+    margin-right: 12px;
+}
+
+.youdao-panel .explains {
+    margin-bottom: 10px;
+}
+
+.color-wrapper {
+    background: #f8f8f8;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.color-wrapper span {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    border: 1px solid #fff;
+}
+
+
+/* antd styles */
+
+.ant-modal-content {
+    /* background-color: azure !important; */
+    border-top: 4px solid #4ab88a !important;
+    border-bottom: 4px solid #4ab88a !important;
 }
 
 .ant-modal {
     margin: 0 !important;
+    border-radius: 6px;
+    padding-bottom: 0 !important;
+}
+.ant-modal-close-x {
+    line-height: 32px !important;
+    width: 40px !important;
+    height: 28px !important;
+}
+.ant-collapse-header {
+    padding: 4px 6px !important;
+    border-bottom: 1px dashed #ccc;
 }

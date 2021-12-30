@@ -4,13 +4,16 @@ import '../views/index.jsx';
 const WORDBOOM_ID = 'wordboom_app';
 
 function createShadowdom() {
-  const container = document.createElement('div');
-  container.setAttribute('id', WORDBOOM_ID);
-  document.body.appendChild(container);
-
-  const shadow = container.attachShadow({ mode: 'open' });
-  // const target = document.querySelector(WORDBOOM_ID).shadowRoot;
-  return shadow;
+  let container = null;
+  if (!document.querySelector(`#${WORDBOOM_ID}`)) {
+    container = document.createElement('div');
+    container.setAttribute('id', WORDBOOM_ID);
+    document.body.appendChild(container);
+    const shadow = container.attachShadow({ mode: 'open' });
+    // const target = document.querySelector(WORDBOOM_ID).shadowRoot;
+    return shadow;
+  }
+  return document.querySelector(`#${WORDBOOM_ID}`).shadowRoot;
 }
 
 function createEvent(type, detail) {
