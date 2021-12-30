@@ -41,14 +41,6 @@ var options = {
     contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.js'),
     devtools: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.js'),
     panel: path.join(__dirname, 'src', 'pages', 'Panel', 'index.jsx'),
-    content: path.join(
-      __dirname,
-      'src',
-      'pages',
-      'Content',
-      'views',
-      'index.jsx'
-    ),
   },
   chromeExtensionBoilerplate: {
     notHotReload: ['contentScript', 'devtools'],
@@ -71,6 +63,7 @@ var options = {
             loader: 'style-loader',
             options: {
               insert: function (linkTag) {
+                // insert into doms
                 setTimeout(() => {
                   const parent =
                     document.querySelector('#wordboom_app').shadowRoot;

@@ -1,7 +1,7 @@
 {
   "name": "wordboom",
   "version": "1.0.0",
-  "description": "",
+  "description": "Wordboom extension for words collection flexibility",
   "license": "MIT",
   "repository": {
     "type": "git",

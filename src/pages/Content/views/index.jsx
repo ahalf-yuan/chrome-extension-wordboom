@@ -1,40 +1,54 @@
 import ReactDOM from 'react-dom';
 import React, { useEffect, useState } from 'react';
-// import { Button, Image } from 'antd';
-import Translate from './Translate';
+import MiniPanel from './MiniPanel';
 import './index.css';
+
+const feichuanSVG = chrome.runtime.getURL('feichuan.svg');
 
 function App() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [show, setShow] = useState(false);
+  const [selectedText, setSelectedText] = useState('');
+  const [showFollowIcon, setShowFollowIcon] = useState(false);
+  const [showMiniPanel, setShowMiniPanel] = useState(false);
 
   useEffect(() => {
     document.addEventListener('wordboom_ee', function (e) {
-      console.log(e.detail);
-      setShow(true);
+      setShowFollowIcon(true);
       const { x, y, selectedText } = e.detail;
       setPos({ x, y });
+      setSelectedText(selectedText);
     });
 
     document.addEventListener('wordboom_ee_hidden', function (e) {
-      setShow(false);
+      setShowFollowIcon(false);
     });
     return () => {};
   }, []);
 
-  const url = chrome.runtime.getURL('feichuan.svg');
+  const handleFollowIconClick = (e) => {
+    e.stopPropagation();
+    setShowMiniPanel(true);
+  };
 
   return (
-    <>
-      {show && (
+    <div>
+      {showFollowIcon && (
         <img
-          src={url}
+          src={feichuanSVG}
           style={{ left: pos.x, top: pos.y }}
           className="App-logo"
           alt="logo"
+          onClick={handleFollowIconClick}
         />
       )}
-    </>
+
+      <MiniPanel
+        visible={showMiniPanel}
+        selectedText={selectedText}
+        pos={pos}
+        onCancel={() => setShowMiniPanel(false)}
+      />
+    </div>
   );
 }
 
