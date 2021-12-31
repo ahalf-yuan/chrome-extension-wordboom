@@ -63,12 +63,22 @@ var options = {
             loader: 'style-loader',
             options: {
               insert: function (linkTag) {
+                let styleContainer = document.querySelector(
+                  '#wordboom_app_style'
+                );
+                if (!styleContainer) {
+                  // create
+                  styleContainer = document.createElement('div');
+                  styleContainer.setAttribute('id', 'wordboom_app_style');
+                  document.body.appendChild(styleContainer);
+                  styleContainer.attachShadow({ mode: 'open' });
+                }
+
                 // insert into doms
-                setTimeout(() => {
-                  const parent =
-                    document.querySelector('#wordboom_app').shadowRoot;
-                  parent.appendChild(linkTag);
-                }, 3000);
+                const shadow = document.querySelector(
+                  '#wordboom_app_style'
+                ).shadowRoot;
+                shadow.appendChild(linkTag);
               },
             },
           },

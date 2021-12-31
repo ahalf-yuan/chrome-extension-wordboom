@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom';
 import React, { useEffect, useState } from 'react';
 import MiniPanel from './MiniPanel';
+import { WORDBOOM_ID, WORDBOOM_EE_VISIBLE_MINIPANEL } from '../helper/constant';
 import './index.css';
 
 const feichuanSVG = chrome.runtime.getURL('feichuan.svg');
@@ -12,15 +13,14 @@ function App() {
   const [showMiniPanel, setShowMiniPanel] = useState(false);
 
   useEffect(() => {
-    document.addEventListener('wordboom_ee', function (e) {
-      setShowFollowIcon(true);
-      const { x, y, selectedText } = e.detail;
+    document.addEventListener(WORDBOOM_EE_VISIBLE_MINIPANEL, function (e) {
+      const { x, y, selectedText, visible } = e.detail;
+      setShowFollowIcon(visible);
+
+      if (!visible) return;
+
       setPos({ x, y });
       setSelectedText(selectedText);
-    });
-
-    document.addEventListener('wordboom_ee_hidden', function (e) {
-      setShowFollowIcon(false);
     });
     return () => {};
   }, []);
@@ -53,7 +53,7 @@ function App() {
 }
 
 const interval = setInterval(() => {
-  const wordboom_app = document.querySelector('#wordboom_app');
+  const wordboom_app = document.querySelector(`#${WORDBOOM_ID}`);
 
   if (wordboom_app) {
     const shadowRoot = wordboom_app.shadowRoot;
