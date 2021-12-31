@@ -1,5 +1,6 @@
-.content-page-wrapper {
+.content-page-wrapper.ant-card {
     box-shadow: rgba(0,0,0,80%) 0 4px 23px -6px;
+    width: 420px;
 }
 
 .youdao-header {
@@ -7,8 +8,8 @@
 }
 
 .youdao-panel {
-    color: #666;
-    font-size: 12px;
+    color: #333;
+    font-size: 13px;
 }
 
 .youdao-panel .web-details {
@@ -21,6 +22,12 @@
 
 .youdao-panel .explains {
     margin-bottom: 10px;
+}
+
+.youdao-panel .anticon-star {
+    font-size: 16px;
+    color: darkgoldenrod;
+    cursor: pointer;
 }
 
 .color-wrapper {
@@ -37,6 +44,10 @@
     display: inline-block;
     margin-right: 6px;
     border: 1px solid #fff;
+}
+
+.marginRight8 {
+    margin-right: 8px;
 }
 
 

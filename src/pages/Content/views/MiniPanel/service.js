@@ -31,4 +31,8 @@ function postTranslate(selectedText) {
     })
 }
 
-export { postTranslate }
+function createWordItem(data) {
+    // return
+}
+
+export { postTranslate, createWordItem }

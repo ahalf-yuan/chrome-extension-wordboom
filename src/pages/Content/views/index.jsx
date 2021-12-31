@@ -1,16 +1,19 @@
 import ReactDOM from 'react-dom';
 import React, { useEffect, useState } from 'react';
 import MiniPanel from './MiniPanel';
+import CreateDetailPanel from './CreateDetailPanel';
 import { WORDBOOM_ID, WORDBOOM_EE_VISIBLE_MINIPANEL } from '../helper/constant';
 import './index.css';
 
 const feichuanSVG = chrome.runtime.getURL('feichuan.svg');
 
 function App() {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [pos, setPos] = useState({ x: 0, y: 0 }); // icon pos
+  const [panelStyle, setPanelStyle] = useState({});
   const [selectedText, setSelectedText] = useState('');
   const [showFollowIcon, setShowFollowIcon] = useState(false);
   const [showMiniPanel, setShowMiniPanel] = useState(false);
+  const [showDetailPanel, setShowDetailPanel] = useState(false);
 
   useEffect(() => {
     document.addEventListener(WORDBOOM_EE_VISIBLE_MINIPANEL, function (e) {
@@ -22,32 +25,62 @@ function App() {
       setPos({ x, y });
       setSelectedText(selectedText);
     });
-    return () => {};
+    return () => {
+      // clear
+    };
   }, []);
 
-  const handleFollowIconClick = (e) => {
-    e.stopPropagation();
-    setShowMiniPanel(true);
-  };
+  useEffect(() => {
+    if (!showFollowIcon) {
+      setShowMiniPanel(false);
+      setShowDetailPanel(false);
+    }
+  }, [showFollowIcon]);
+
+  useEffect(() => {
+    if (showMiniPanel && showDetailPanel) {
+      setPanelStyle({
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+      });
+    } else if (showMiniPanel) {
+      setPanelStyle({
+        left: pos.x,
+        top: pos.y,
+      });
+    }
+  }, [showMiniPanel, showDetailPanel, pos]);
 
   return (
-    <div>
+    <div className="wordboom-app" onClick={(e) => e.stopPropagation()}>
       {showFollowIcon && (
         <img
           src={feichuanSVG}
           style={{ left: pos.x, top: pos.y }}
           className="App-logo"
           alt="logo"
-          onClick={handleFollowIconClick}
+          onClick={() => setShowMiniPanel(true)}
         />
       )}
 
-      <MiniPanel
-        visible={showMiniPanel}
-        selectedText={selectedText}
-        pos={pos}
-        onCancel={() => setShowMiniPanel(false)}
-      />
+      <div className="panel-wrapper" style={panelStyle}>
+        <MiniPanel
+          visible={showMiniPanel}
+          selectedText={selectedText}
+          onCancel={() => setShowMiniPanel(false)}
+          onClickWordIcon={() => setShowDetailPanel(true)} // click collect btn around word
+        />
+
+        <CreateDetailPanel
+          visible={showDetailPanel}
+          onCancel={() => setShowDetailPanel(false)}
+        />
+      </div>
+
+      {showDetailPanel && (
+        <div className="mask" onClick={() => setShowFollowIcon(false)}></div>
+      )}
     </div>
   );
 }

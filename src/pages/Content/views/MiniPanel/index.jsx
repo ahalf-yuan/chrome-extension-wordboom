@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Collapse } from 'antd';
-import { postTranslate } from './translate';
+import { Card, Collapse } from 'antd';
+import { FileAddOutlined, StarOutlined } from '@ant-design/icons';
+import { postTranslate } from './service';
 
 import './index.css';
 
@@ -12,7 +13,6 @@ const MiniPanel = (props) => {
     if (props.visible) {
       if (selectedText && selectedText.length > 0) {
         postTranslate(selectedText).then((transData) => {
-          console.log('trans data =>', transData);
           const { basic, translation, web, query } = transData;
           setTransData({
             basic: basic || {},
@@ -27,8 +27,6 @@ const MiniPanel = (props) => {
     return () => {};
   }, [props.visible, selectedText]);
 
-  const handleOk = () => {};
-
   const colors = [
     'rgb(255, 202, 215)',
 
@@ -42,30 +40,24 @@ const MiniPanel = (props) => {
   ];
 
   return (
-    <Modal
-      title=""
-      visible={props.visible}
-      getContainer={false}
-      onOk={handleOk}
-      onCancel={() => props.onCancel()}
-      width={420}
-      style={{ left: pos.x, top: pos.y }}
-      bodyStyle={{ padding: 0 }}
-      mask={false}
-      footer={false}
-      className="content-page-wrapper"
-    >
-      <div className="color-wrapper">
-        <img
-          alt=""
-          src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjQwODc3NjA4NjI5IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM2MTM3IiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIj48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwvc3R5bGU+PC9kZWZzPjxwYXRoIGQ9Ik0yMzYuNCA0NjQuNWEyNjcuNCAxMjAuNSAwIDEgMCA1MzQuOCAwIDI2Ny40IDEyMC41IDAgMSAwLTUzNC44IDBaIiBmaWxsPSIjMzMzMzMzIiBwLWlkPSIzNjEzOCI+PC9wYXRoPjxwYXRoIGQ9Ik0yNDcuNyAzNTYuM2EyNjcuNCAxMjAuNSAwIDEgMCA1MzQuOCAwIDI2Ny40IDEyMC41IDAgMSAwLTUzNC44IDBaIiBmaWxsPSIjMzMzMzMzIiBwLWlkPSIzNjEzOSI+PC9wYXRoPjxwYXRoIGQ9Ik0zNDggMzA2YTc3LjkgNzAuMiAwIDEgMCAxNTUuOCAwIDc3LjkgNzAuMiAwIDEgMC0xNTUuOCAwWiIgZmlsbD0iIzI3QzE4RiIgcC1pZD0iMzYxNDAiPjwvcGF0aD48cGF0aCBkPSJNNTI3LjkgMzE1LjFhNzcuOSA3MC4yIDAgMSAwIDE1NS44IDAgNzcuOSA3MC4yIDAgMSAwLTE1NS44IDBaIiBmaWxsPSIjMzVBRERGIiBwLWlkPSIzNjE0MSI+PC9wYXRoPjxwYXRoIGQ9Ik02MzQuNiA0NjQuNWE3Ny45IDcwLjIgMCAxIDAgMTU1LjggMCA3Ny45IDcwLjIgMCAxIDAtMTU1LjggMFoiIGZpbGw9IiNGRjVCNUMiIHAtaWQ9IjM2MTQyIj48L3BhdGg+PHBhdGggZD0iTTg0MC4yIDQ4MkM4MjQuOCAzMTYuNiA2ODQuNSAxODcuMSA1MTUgMTg3LjFjLTE3OS43IDAtMzI1LjQgMTQ1LjctMzI1LjQgMzI1LjVDMTg5LjYgNjkyLjMgMzM1LjMgODM4IDUxNSA4MzhjMjkuNSAwIDUzLjQtMjMuOSA1My40LTUzLjQgMC0yMS45LTEzLjItNDAuNy0zMi00OC45LTEyLjgtOC4yLTIxLjMtMjIuNC0yMS4zLTM4LjYgMC0yNS4yIDIwLjYtNDUuOSA0NS45LTQ1LjloMTMyLjZ2LTAuMWM3Ny44LTEuMiAxNDEuMi02MS45IDE0Ni43LTEzOC42IDAtMi40IDAuMS00LjcgMC03LjF2LTMuNmMtMC4xLTYuNyAwLjgtMTMuMy0wLjEtMTkuOHogbS01MjIuNSA0MS4yYy0zMi40IDAtNTguNy0yNi4zLTU4LjctNTguNyAwLTMyLjQgMjYuMy01OC43IDU4LjctNTguNyAzMi40IDAgNTguNyAyNi4zIDU4LjcgNTguNyAwIDMyLjUtMjYuMyA1OC43LTU4LjcgNTguN3ogbTEwNi43LTE0OS40Yy0zMi40IDAtNTguNy0yNi4zLTU4LjctNTguNyAwLTMyLjQgMjYuMy01OC43IDU4LjctNTguNyAzMi40IDAgNTguNyAyNi4zIDU4LjcgNTguNyAwIDMyLjQtMjYuMyA1OC43LTU4LjcgNTguN3ogbTE4MS40IDBjLTMyLjQgMC01OC43LTI2LjMtNTguNy01OC43IDAtMzIuNCAyNi4zLTU4LjcgNTguNy01OC43IDMyLjQgMCA1OC43IDI2LjMgNTguNyA1OC43IDAgMzIuNC0yNi4zIDU4LjctNTguNyA1OC43eiBtMTA2LjcgMTQ5LjRjLTMyLjQgMC01OC43LTI2LjMtNTguNy01OC43IDAtMzIuNCAyNi4zLTU4LjcgNTguNy01OC43IDMyLjQgMCA1OC43IDI2LjMgNTguNyA1OC43IDAgMzIuNS0yNi4zIDU4LjctNTguNyA1OC43eiBtMCAwIiBmaWxsPSIjRkZCQTQwIiBwLWlkPSIzNjE0MyI+PC9wYXRoPjwvc3ZnPg=="
-        />
-        {colors.map((color) => (
-          <span key={color} style={{ background: color }}></span>
-        ))}
-      </div>
-      <TransTempl {...transData} />
-    </Modal>
+    props.visible && (
+      <Card
+        // onCancel={() => props.onCancel()}
+        bodyStyle={{ padding: 0 }}
+        className="content-page-wrapper"
+      >
+        <div className="color-wrapper">
+          <img
+            alt=""
+            src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjQwODc3NjA4NjI5IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM2MTM3IiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIj48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwvc3R5bGU+PC9kZWZzPjxwYXRoIGQ9Ik0yMzYuNCA0NjQuNWEyNjcuNCAxMjAuNSAwIDEgMCA1MzQuOCAwIDI2Ny40IDEyMC41IDAgMSAwLTUzNC44IDBaIiBmaWxsPSIjMzMzMzMzIiBwLWlkPSIzNjEzOCI+PC9wYXRoPjxwYXRoIGQ9Ik0yNDcuNyAzNTYuM2EyNjcuNCAxMjAuNSAwIDEgMCA1MzQuOCAwIDI2Ny40IDEyMC41IDAgMSAwLTUzNC44IDBaIiBmaWxsPSIjMzMzMzMzIiBwLWlkPSIzNjEzOSI+PC9wYXRoPjxwYXRoIGQ9Ik0zNDggMzA2YTc3LjkgNzAuMiAwIDEgMCAxNTUuOCAwIDc3LjkgNzAuMiAwIDEgMC0xNTUuOCAwWiIgZmlsbD0iIzI3QzE4RiIgcC1pZD0iMzYxNDAiPjwvcGF0aD48cGF0aCBkPSJNNTI3LjkgMzE1LjFhNzcuOSA3MC4yIDAgMSAwIDE1NS44IDAgNzcuOSA3MC4yIDAgMSAwLTE1NS44IDBaIiBmaWxsPSIjMzVBRERGIiBwLWlkPSIzNjE0MSI+PC9wYXRoPjxwYXRoIGQ9Ik02MzQuNiA0NjQuNWE3Ny45IDcwLjIgMCAxIDAgMTU1LjggMCA3Ny45IDcwLjIgMCAxIDAtMTU1LjggMFoiIGZpbGw9IiNGRjVCNUMiIHAtaWQ9IjM2MTQyIj48L3BhdGg+PHBhdGggZD0iTTg0MC4yIDQ4MkM4MjQuOCAzMTYuNiA2ODQuNSAxODcuMSA1MTUgMTg3LjFjLTE3OS43IDAtMzI1LjQgMTQ1LjctMzI1LjQgMzI1LjVDMTg5LjYgNjkyLjMgMzM1LjMgODM4IDUxNSA4MzhjMjkuNSAwIDUzLjQtMjMuOSA1My40LTUzLjQgMC0yMS45LTEzLjItNDAuNy0zMi00OC45LTEyLjgtOC4yLTIxLjMtMjIuNC0yMS4zLTM4LjYgMC0yNS4yIDIwLjYtNDUuOSA0NS45LTQ1LjloMTMyLjZ2LTAuMWM3Ny44LTEuMiAxNDEuMi02MS45IDE0Ni43LTEzOC42IDAtMi40IDAuMS00LjcgMC03LjF2LTMuNmMtMC4xLTYuNyAwLjgtMTMuMy0wLjEtMTkuOHogbS01MjIuNSA0MS4yYy0zMi40IDAtNTguNy0yNi4zLTU4LjctNTguNyAwLTMyLjQgMjYuMy01OC43IDU4LjctNTguNyAzMi40IDAgNTguNyAyNi4zIDU4LjcgNTguNyAwIDMyLjUtMjYuMyA1OC43LTU4LjcgNTguN3ogbTEwNi43LTE0OS40Yy0zMi40IDAtNTguNy0yNi4zLTU4LjctNTguNyAwLTMyLjQgMjYuMy01OC43IDU4LjctNTguNyAzMi40IDAgNTguNyAyNi4zIDU4LjcgNTguNyAwIDMyLjQtMjYuMyA1OC43LTU4LjcgNTguN3ogbTE4MS40IDBjLTMyLjQgMC01OC43LTI2LjMtNTguNy01OC43IDAtMzIuNCAyNi4zLTU4LjcgNTguNy01OC43IDMyLjQgMCA1OC43IDI2LjMgNTguNyA1OC43IDAgMzIuNC0yNi4zIDU4LjctNTguNyA1OC43eiBtMTA2LjcgMTQ5LjRjLTMyLjQgMC01OC43LTI2LjMtNTguNy01OC43IDAtMzIuNCAyNi4zLTU4LjcgNTguNy01OC43IDMyLjQgMCA1OC43IDI2LjMgNTguNyA1OC43IDAgMzIuNS0yNi4zIDU4LjctNTguNyA1OC43eiBtMCAwIiBmaWxsPSIjRkZCQTQwIiBwLWlkPSIzNjE0MyI+PC9wYXRoPjwvc3ZnPg=="
+          />
+          {colors.map((color) => (
+            <span key={color} style={{ background: color }}></span>
+          ))}
+        </div>
+        <TransTempl {...transData} onClickWordIcon={props.onClickWordIcon}/>
+      </Card>
+    )
   );
 };
 
@@ -94,9 +86,15 @@ function TransTempl(props) {
     <Collapse defaultActiveKey={['1']} ghost expandIconPosition="right">
       <Collapse.Panel header={youdaoHeader} key="1">
         <div className="youdao-panel">
-          <h2>{query}</h2>
+          <h2>
+            <span className="marginRight8">{query}</span>
+            {/* TODO: according to status */}
+            {/* onClickWordIcon 上下传递了3次，需优化 */}
+            <StarOutlined onClick={() => props.onClickWordIcon()} />
+          </h2>
           {/* <p>{translation}</p> */}
           {/* if basic. logoc */}
+
           <div className="phonetic">
             <span>美：[{basic['uk-phonetic']}]</span>
             <span>英：[{basic['us-phonetic']}]</span>
