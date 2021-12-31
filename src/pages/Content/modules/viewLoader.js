@@ -1,7 +1,11 @@
 import UserSelection from './userSelection';
 import '../views/index.jsx';
-
-const WORDBOOM_ID = 'wordboom_app';
+import {
+  WORDBOOM_ID,
+  WORDBOOM_EE_VISIBLE_MINIPANEL,
+  WORDBOOM_APP_STYLE,
+} from '../helper/constant';
+import { moveNodes } from '../helper/util';
 
 function createShadowdom() {
   let container = null;
@@ -16,6 +20,26 @@ function createShadowdom() {
   return document.querySelector(`#${WORDBOOM_ID}`).shadowRoot;
 }
 
+/**
+ * the style container is created by webpack style-loader
+ * so this function will move its inner nodes into app container,
+ * and remove the style container.
+ *
+ * @param {*} destShawdom
+ */
+function moveStyleIntoAppDom(destShawdomNode) {
+  // ensure the style container is mounted
+  setTimeout(() => {
+    const styleContainer = document.querySelector(`#${WORDBOOM_APP_STYLE}`);
+    if (styleContainer) {
+      const shadowRootNode = styleContainer.shadowRoot;
+      moveNodes(shadowRootNode, destShawdomNode);
+      styleContainer.remove();
+    }
+    moveStyleIntoAppDom(destShawdomNode);
+  }, 500);
+}
+
 function createEvent(type, detail) {
   var wordboomEvent = new CustomEvent(type, {
     // objParams就是需要传递的参数，
@@ -26,7 +50,8 @@ function createEvent(type, detail) {
 }
 
 function init() {
-  createShadowdom();
+  const appShadowdom = createShadowdom();
+  moveStyleIntoAppDom(appShadowdom);
 
   // 鼠标松开后，获取鼠标位置以及所选文本
   document.onmouseup = function () {
@@ -36,7 +61,8 @@ function init() {
       if (selectedText.length > 0) {
         // get right bottom pos of the selection
         const { x, y } = userSelection.getPos('end');
-        createEvent('wordboom_ee', {
+        createEvent(WORDBOOM_EE_VISIBLE_MINIPANEL, {
+          visible: true,
           x,
           y,
           selectedText,
@@ -50,7 +76,7 @@ function init() {
   document.onclick = function (ev) {
     // 隐藏弹窗
     // wordboomIframe.hide();
-    createEvent('wordboom_ee_hidden');
+    createEvent(WORDBOOM_EE_VISIBLE_MINIPANEL, { visible: false });
   };
 
   document.getElementById(WORDBOOM_ID).onmouseup = function (e) {
@@ -67,5 +93,9 @@ function init() {
  */
 window.onload = function () {
   // console.log(chrome.runtime.getManifest().id);
-  init();
+  try {
+    init();
+  } catch (err) {
+    // handle error
+  }
 };
