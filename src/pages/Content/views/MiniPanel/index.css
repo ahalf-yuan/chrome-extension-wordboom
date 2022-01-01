@@ -1,6 +1,9 @@
 .content-page-wrapper.ant-card {
   box-shadow: rgba(0, 0, 0, 80%) 0 4px 23px -6px;
-  width: 420px;
+  min-width: 300px;
+  max-width: 400px;
+  width: fit-content;
+  height: fit-content;
 }
 
 .youdao-header {

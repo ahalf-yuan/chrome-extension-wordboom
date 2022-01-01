@@ -73,6 +73,7 @@ function App() {
         />
 
         <CreateDetailPanel
+          selectedText={selectedText}
           visible={showDetailPanel}
           onCancel={() => setShowDetailPanel(false)}
         />
