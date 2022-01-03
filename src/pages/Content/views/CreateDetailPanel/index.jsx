@@ -9,8 +9,11 @@
  */
 import React, { useState } from 'react';
 import { Form, Input, Button, Card } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import Icon, { CloseOutlined } from '@ant-design/icons';
+// import airplane from '../../../../assets/content/airplane.svg';
 import './index.css';
+
+const airplaneSVG = chrome.runtime.getURL('airplane.svg');
 
 const { TextArea } = Input;
 
@@ -22,7 +25,17 @@ function CreateDetailPanel(props) {
         title={
           <div className="panel-header">
             <span>添加单词</span>
-            <CloseOutlined onClick={props.onCancel} />
+            <div>
+              <Button shape="round">
+                确定{' '}
+                <img
+                  alt=""
+                  src={airplaneSVG}
+                  style={{ height: '20px', marginLeft: '4px' }}
+                />
+              </Button>
+              <CloseOutlined onClick={props.onCancel} />
+            </div>
           </div>
         }
         size="small"
@@ -31,7 +44,6 @@ function CreateDetailPanel(props) {
       >
         <div className="title-panel">
           <h3 className="word">{selectedText}</h3>
-          <Button shape="round">确定</Button>
         </div>
 
         <div className="form-wrapper">

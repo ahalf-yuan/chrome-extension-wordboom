@@ -210,8 +210,10 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'src/assets/content/feichuan.svg',
-          to: path.join(__dirname, 'build'),
+          from: 'src/assets/content/*.svg',
+          to({ context, absoluteFilename }) {
+            return '[name].[ext]';
+          },
           force: true,
         },
       ],
