@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card } from 'antd';
 import Icon, { CloseOutlined } from '@ant-design/icons';
 // import airplane from '../../../../assets/content/airplane.svg';
+import { getPageInfo } from '../../../../helper/browser';
 import './index.css';
 
 const airplaneSVG = chrome.runtime.getURL('airplane.svg');
@@ -18,7 +19,26 @@ const airplaneSVG = chrome.runtime.getURL('airplane.svg');
 const { TextArea } = Input;
 
 function CreateDetailPanel(props) {
-  const { selectedText } = props;
+  const [form] = Form.useForm();
+  const {
+    details: { selectedText, sentence },
+  } = props;
+
+  const { pageTitle, pageURL } = getPageInfo();
+
+  const onFinish = (values) => {
+    form
+      .validateFields()
+      .then((values) => {
+        // form.resetFields();
+        console.log('Success:', values);
+        // onCreate(values);
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  };
+
   return (
     props.visible && (
       <Card
@@ -26,7 +46,7 @@ function CreateDetailPanel(props) {
           <div className="panel-header">
             <span>添加单词</span>
             <div>
-              <Button shape="round">
+              <Button shape="round" onClick={onFinish}>
                 确定{' '}
                 <img
                   alt=""
@@ -50,43 +70,40 @@ function CreateDetailPanel(props) {
           <Form
             name="basic"
             layout="vertical"
-            initialValues={{
-              remember: true,
-            }}
-            // onFinish={onFinish}
-            // onFinishFailed={onFinishFailed}
+            form={form}
+            initialValues={{ sentence, pageTitle, pageURL }}
             autoComplete="off"
           >
-            <Form.Item label="上下文" name="username">
+            <Form.Item label="上下文" name="sentence">
               <TextArea
                 bordered={false}
-                placeholder="Controlled autosize"
+                placeholder="上下文"
                 autoSize={{ minRows: 2, maxRows: 5 }}
               />
             </Form.Item>
-            <Form.Item label="翻译" name="username">
+            <Form.Item label="翻译" name="translate">
               <TextArea
                 bordered={false}
-                placeholder="Controlled autosize"
+                placeholder="翻译"
                 autoSize={{ minRows: 3, maxRows: 5 }}
               />
             </Form.Item>
-            <Form.Item label="笔记" name="username">
+            <Form.Item label="笔记" name="note">
               <TextArea
                 bordered={false}
-                placeholder="Controlled autosize"
+                placeholder="笔记"
                 autoSize={{ minRows: 3, maxRows: 5 }}
               />
             </Form.Item>
 
-            <Form.Item label="来源标题" name="username">
-              <Input bordered={false} />
+            <Form.Item label="来源标题" name="pageTitle">
+              <Input bordered={false} placeholder="来源标题" />
             </Form.Item>
-            <Form.Item label="来源链接" name="username">
-              <Input bordered={false} />
+            <Form.Item label="来源链接" name="pageURL">
+              <Input bordered={false} placeholder="来源链接" />
             </Form.Item>
             <Form.Item label="来源图标" name="username">
-              <Input bordered={false} />
+              <Input bordered={false} placeholder="来源图标" />
             </Form.Item>
           </Form>
         </div>

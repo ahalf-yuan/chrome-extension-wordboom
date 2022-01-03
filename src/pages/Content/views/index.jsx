@@ -8,22 +8,24 @@ import './index.css';
 const feichuanSVG = chrome.runtime.getURL('feichuan.svg');
 
 function App() {
-  const [pos, setPos] = useState({ x: 0, y: 0 }); // icon pos
-  const [panelStyle, setPanelStyle] = useState({});
   const [selectedText, setSelectedText] = useState('');
+  const [sentence, setSelectedSentence] = useState('');
+  const [pos, setPos] = useState({ x: 0, y: 0 }); // icon pos
+  const [panelStyle, setPanelStyle] = useState({}); // panel pos
   const [showFollowIcon, setShowFollowIcon] = useState(false);
   const [showMiniPanel, setShowMiniPanel] = useState(false);
   const [showDetailPanel, setShowDetailPanel] = useState(false);
 
   useEffect(() => {
     document.addEventListener(WORDBOOM_EE_VISIBLE_MINIPANEL, function (e) {
-      const { x, y, selectedText, visible } = e.detail;
+      const { x, y, visible, selectedText, sentence } = e.detail;
       setShowFollowIcon(visible);
 
       if (!visible) return;
 
       setPos({ x, y });
       setSelectedText(selectedText);
+      setSelectedSentence(sentence);
     });
     return () => {
       // clear
@@ -73,7 +75,7 @@ function App() {
         />
 
         <CreateDetailPanel
-          selectedText={selectedText}
+          details={{ selectedText, sentence }}
           visible={showDetailPanel}
           onCancel={() => setShowDetailPanel(false)}
         />

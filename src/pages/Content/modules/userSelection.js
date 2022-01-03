@@ -1,3 +1,4 @@
+import { getSentenceFromSelection } from 'get-selection-more';
 /**
  * 用户文字选区，内容及位置等信息
  * https://www.zhangxinxu.com/wordpress/2011/04/js-range-html%E6%96%87%E6%A1%A3%E6%96%87%E5%AD%97%E5%86%85%E5%AE%B9%E9%80%89%E4%B8%AD%E3%80%81%E5%BA%93%E5%8F%8A%E5%BA%94%E7%94%A8%E4%BB%8B%E7%BB%8D/
@@ -6,6 +7,7 @@ class UserSelection {
   constructor() {
     this.selectedText = '';
     this.selection = null;
+    this.sentence = '';
     this.endPos = {
       x: 0,
       y: 0,
@@ -16,6 +18,7 @@ class UserSelection {
 
   create() {
     this.getSelection();
+    this.getSentenceFromSelection();
   }
 
   /**
@@ -36,6 +39,11 @@ class UserSelection {
     }
     this.selection = selection;
     return selection;
+  }
+
+  getSentenceFromSelection() {
+    const sentence = getSentenceFromSelection(this.selection);
+    this.sentence = sentence;
   }
 
   getRangeObject(selectionObject) {
