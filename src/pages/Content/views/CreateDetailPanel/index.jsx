@@ -7,26 +7,40 @@
  * - origin sentence
  * - from webpage { url, icon }
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Card } from 'antd';
 import Icon, { CloseOutlined } from '@ant-design/icons';
 // import airplane from '../../../../assets/content/airplane.svg';
-import { getPageInfo } from '../../../../helper/browser';
 import './index.css';
 
 const airplaneSVG = chrome.runtime.getURL('airplane.svg');
 
 const { TextArea } = Input;
 
+function getCurrentPageinfo() {
+  // using async await
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(
+      {
+        type: 'page',
+        request: null, // payload
+      },
+      function (data) {
+        console.log('data =>', data);
+        resolve(data);
+      }
+    );
+  });
+}
+
 function CreateDetailPanel(props) {
+  const [pageInfo, setPageInfo] = useState({});
   const [form] = Form.useForm();
   const {
     details: { selectedText, sentence },
   } = props;
 
-  const { pageTitle, pageURL } = getPageInfo();
-
-  const onFinish = (values) => {
+  const onFinish = () => {
     form
       .validateFields()
       .then((values) => {
@@ -38,6 +52,29 @@ function CreateDetailPanel(props) {
         console.log('Validate Failed:', info);
       });
   };
+
+  useEffect(() => {
+    if (props.visible) {
+      getCurrentPageinfo()
+        .then((res) => {
+          const { faviconURL, pageId, pageTitle, pageURL } = res;
+          setPageInfo({
+            faviconURL,
+            pageId,
+            pageTitle,
+            pageURL,
+          });
+          // async set field value
+          form.setFieldsValue(res);
+        })
+        .catch((err) => {
+          console.error('get page info err:', err);
+        });
+    }
+    return () => {
+      // cleanup
+    };
+  }, [props.visible, form]);
 
   return (
     props.visible && (
@@ -71,7 +108,7 @@ function CreateDetailPanel(props) {
             name="basic"
             layout="vertical"
             form={form}
-            initialValues={{ sentence, pageTitle, pageURL }}
+            initialValues={{ sentence, ...pageInfo }} // not async
             autoComplete="off"
           >
             <Form.Item label="上下文" name="sentence">
@@ -102,7 +139,19 @@ function CreateDetailPanel(props) {
             <Form.Item label="来源链接" name="pageURL">
               <Input bordered={false} placeholder="来源链接" />
             </Form.Item>
-            <Form.Item label="来源图标" name="username">
+            <Form.Item
+              label={
+                <div>
+                  来源图标{' '}
+                  <img
+                    alt=""
+                    src={pageInfo.faviconURL}
+                    style={{ width: '20px' }}
+                  />
+                </div>
+              }
+              name="faviconURL"
+            >
               <Input bordered={false} placeholder="来源图标" />
             </Form.Item>
           </Form>
