@@ -40,8 +40,10 @@ function CreateDetailPanel(props) {
         // form.resetFields();
         console.log('Success:', values);
         // onCreate(values);
+        values.word = selectedText;
         saveWord(values).then((res) => {
-          console.log('=== view save word =>', res);
+          // success
+          props.onSuccess('success');
         });
       })
       .catch((info) => {

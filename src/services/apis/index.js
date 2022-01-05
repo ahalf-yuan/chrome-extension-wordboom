@@ -52,10 +52,4 @@ function saveWord(body) {
     });
 }
 
-// function signin() {
-//   return fetch(HOST + '/api/signin', {
-//     method: 'GET',
-//     body: JSON.stringify({}),
-//   });
-// }
 export { postTranslate, createWordItem, saveWord };

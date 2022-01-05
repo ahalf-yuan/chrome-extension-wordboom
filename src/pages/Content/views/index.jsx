@@ -4,6 +4,7 @@ import MiniPanel from './MiniPanel';
 import CreateDetailPanel from './CreateDetailPanel';
 import { WORDBOOM_ID, WORDBOOM_EE_VISIBLE_MINIPANEL } from '../helper/constant';
 import { postTranslate } from '../../../services/actions';
+import { getUserInfo } from '../../../services/actions/user';
 
 import './index.css';
 
@@ -13,6 +14,7 @@ function App() {
   const [selectedText, setSelectedText] = useState('');
   const [sentence, setSelectedSentence] = useState('');
   const [transData, setTransData] = useState({});
+  const [saved, setSaved] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 }); // icon pos
   const [panelStyle, setPanelStyle] = useState({}); // panel pos
   const [showFollowIcon, setShowFollowIcon] = useState(false);
@@ -34,6 +36,10 @@ function App() {
       // clear
     };
   }, []);
+
+  useEffect(() => {
+    setSaved(false);
+  }, [selectedText]);
 
   useEffect(() => {
     if (!showFollowIcon) {
@@ -77,6 +83,25 @@ function App() {
     }
   };
 
+  const handleClickWordIcon = () => {
+    // 其他接口 401 ，需要跟新这里
+    if (!window.wordboom_userinfo) {
+      getUserInfo()
+        .then((res) => {
+          window.wordboom_userinfo = res;
+          setShowDetailPanel(true);
+        })
+        .catch((err) => {});
+    } else {
+      setShowDetailPanel(true);
+    }
+  };
+
+  const handleSaveSuccess = (isSuccess) => {
+    setShowDetailPanel(false);
+    setSaved(true);
+  };
+
   return (
     <div className="wordboom-app" onClick={(e) => e.stopPropagation()}>
       {showFollowIcon && (
@@ -94,14 +119,15 @@ function App() {
           visible={showMiniPanel}
           selectedText={selectedText}
           transData={transData}
+          saved={saved}
           onCancel={() => setShowMiniPanel(false)}
-          onClickWordIcon={() => setShowDetailPanel(true)} // click collect btn around word
+          onClickWordIcon={handleClickWordIcon} // click collect btn around word
         />
-
         <CreateDetailPanel
           details={{ selectedText, sentence }}
           transData={transData}
           visible={showDetailPanel}
+          onSuccess={handleSaveSuccess}
           onCancel={() => setShowDetailPanel(false)}
         />
       </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Collapse } from 'antd';
 import {
   FileAddOutlined,
+  StarFilled,
   StarOutlined,
   CloseOutlined,
   PlusSquareOutlined,
@@ -12,7 +13,7 @@ import { dictUrl } from '../../helper/constant';
 import './index.css';
 
 const MiniPanel = (props) => {
-  const { transData } = props;
+  const { transData, saved } = props;
 
   const colors = [
     'rgb(255, 202, 215)',
@@ -41,7 +42,11 @@ const MiniPanel = (props) => {
 
           <CloseOutlined onClick={props.onCancel} />
         </div>
-        <TransTempl {...transData} onClickWordIcon={props.onClickWordIcon} />
+        <TransTempl
+          {...transData}
+          saved={saved}
+          onClickWordIcon={props.onClickWordIcon}
+        />
       </Card>
     )
   );
@@ -56,7 +61,7 @@ const MiniPanel = (props) => {
  * @param {*} props
  */
 function TransTempl(props) {
-  const { query, basic = {}, translation, web } = props;
+  const { query, basic = {}, translation, web, saved } = props;
   const [displayWebPanel, setDisplayWebPanel] = useState(false);
 
   const header = (
@@ -77,9 +82,13 @@ function TransTempl(props) {
         <div className="youdao-panel">
           <h2>
             <span className="marginRight8">{query}</span>
-            {/* TODO: according to status */}
             {/* onClickWordIcon 上下传递了3次，需优化 */}
-            <StarOutlined onClick={() => props.onClickWordIcon()} />
+            {/* 取消收藏 */}
+            {saved ? (
+              <StarFilled />
+            ) : (
+              <StarOutlined onClick={() => props.onClickWordIcon()} />
+            )}
           </h2>
           {/* <p>{translation}</p> */}
           {/* if basic. logoc */}
