@@ -10,9 +10,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Card } from 'antd';
 import Icon, { CloseOutlined } from '@ant-design/icons';
-import message from '../../../../helper/message';
 import { saveWord, getPageInfo } from '../../../../services/actions/index';
-// import airplane from '../../../../assets/content/airplane.svg';
 import { getExtUrl } from '../../../../helper/browser';
 import './index.css';
 
@@ -25,7 +23,15 @@ function CreateDetailPanel(props) {
   const [form] = Form.useForm();
   const {
     details: { selectedText, sentence },
+    transData = {},
   } = props;
+  const initValue = {
+    sentence,
+    translate:
+      transData.basic &&
+      transData.basic.explains &&
+      transData.basic.explains.join('\n'),
+  };
 
   const onFinish = () => {
     form
@@ -55,7 +61,7 @@ function CreateDetailPanel(props) {
             pageURL,
           });
           // async set field value
-          form.setFieldsValue(res);
+          form.setFieldsValue({ ...res, ...initValue });
         })
         .catch((err) => {
           console.error('get page info err:', err);
@@ -64,7 +70,7 @@ function CreateDetailPanel(props) {
     return () => {
       // cleanup
     };
-  }, [props.visible, form]);
+  }, [props.visible, form, initValue]);
 
   return (
     props.visible && (
@@ -98,7 +104,7 @@ function CreateDetailPanel(props) {
             name="basic"
             layout="vertical"
             form={form}
-            initialValues={{ sentence, ...pageInfo }} // not async
+            // initialValues={} // not async
             autoComplete="off"
           >
             <Form.Item label="上下文" name="sentence">

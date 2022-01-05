@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import MiniPanel from './MiniPanel';
 import CreateDetailPanel from './CreateDetailPanel';
 import { WORDBOOM_ID, WORDBOOM_EE_VISIBLE_MINIPANEL } from '../helper/constant';
+import { postTranslate } from '../../../services/actions';
+
 import './index.css';
 
 const feichuanSVG = chrome.runtime.getURL('feichuan.svg');
@@ -10,6 +12,7 @@ const feichuanSVG = chrome.runtime.getURL('feichuan.svg');
 function App() {
   const [selectedText, setSelectedText] = useState('');
   const [sentence, setSelectedSentence] = useState('');
+  const [transData, setTransData] = useState({});
   const [pos, setPos] = useState({ x: 0, y: 0 }); // icon pos
   const [panelStyle, setPanelStyle] = useState({}); // panel pos
   const [showFollowIcon, setShowFollowIcon] = useState(false);
@@ -54,6 +57,26 @@ function App() {
     }
   }, [showMiniPanel, showDetailPanel, pos]);
 
+  const handlePopupTranslate = () => {
+    if (showMiniPanel) return;
+
+    if (selectedText && selectedText.length > 0) {
+      postTranslate(selectedText).then((transData) => {
+        if (!transData) return;
+
+        const { basic, translation, web, query } = transData;
+        setTransData({
+          basic: basic || {},
+          query,
+          translation,
+          web,
+        });
+
+        setShowMiniPanel(true);
+      });
+    }
+  };
+
   return (
     <div className="wordboom-app" onClick={(e) => e.stopPropagation()}>
       {showFollowIcon && (
@@ -62,7 +85,7 @@ function App() {
           style={{ left: pos.x, top: pos.y }}
           className="App-logo"
           alt="logo"
-          onClick={() => setShowMiniPanel(true)}
+          onClick={handlePopupTranslate}
         />
       )}
 
@@ -70,12 +93,14 @@ function App() {
         <MiniPanel
           visible={showMiniPanel}
           selectedText={selectedText}
+          transData={transData}
           onCancel={() => setShowMiniPanel(false)}
           onClickWordIcon={() => setShowDetailPanel(true)} // click collect btn around word
         />
 
         <CreateDetailPanel
           details={{ selectedText, sentence }}
+          transData={transData}
           visible={showDetailPanel}
           onCancel={() => setShowDetailPanel(false)}
         />

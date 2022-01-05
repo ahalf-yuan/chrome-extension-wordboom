@@ -59,7 +59,6 @@ function init() {
       const userSelection = new UserSelection();
       const selectedText = userSelection.selectedText;
       const sentence = userSelection.sentence;
-      console.log('sentence =>', sentence);
       if (selectedText.length > 0) {
         // get right bottom pos of the selection
         const { x, y } = userSelection.getPos('end');

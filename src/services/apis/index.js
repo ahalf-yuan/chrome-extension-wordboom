@@ -1,6 +1,4 @@
- 
-
- const YOUDAO_API = 'https://aidemo.youdao.com/trans';
+const YOUDAO_API = 'https://aidemo.youdao.com/trans';
 
 function transDataToFormData(obj) {
   const res = new URLSearchParams();
@@ -34,24 +32,30 @@ function createWordItem(data) {
   // return
 }
 
-function saveWord(selectedText) {
-    return fetch(YOUDAO_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: transDataToFormData({
-          q: selectedText || 'test',
-        }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          return res;
-        })
-        .catch((err) => {
-          // handle error
-          return null;
-        });
+const HOST = 'http://localhost:8080';
+
+function saveWord(body) {
+  return fetch(HOST + '/api/words/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      // handle error
+      return null;
+    });
 }
 
+// function signin() {
+//   return fetch(HOST + '/api/signin', {
+//     method: 'GET',
+//     body: JSON.stringify({}),
+//   });
+// }
 export { postTranslate, createWordItem, saveWord };
