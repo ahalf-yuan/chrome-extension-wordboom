@@ -15,4 +15,8 @@ function getPageInfo() {
   return result;
 }
 
-export { getPageInfo };
+function getExtUrl(name) {
+  return chrome.runtime.getURL(name);
+}
+
+export { getPageInfo, getExtUrl };

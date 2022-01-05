@@ -10,28 +10,15 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Card } from 'antd';
 import Icon, { CloseOutlined } from '@ant-design/icons';
+import message from '../../../../helper/message';
+import { saveWord, getPageInfo } from '../../../../services/actions/index';
 // import airplane from '../../../../assets/content/airplane.svg';
+import { getExtUrl } from '../../../../helper/browser';
 import './index.css';
 
-const airplaneSVG = chrome.runtime.getURL('airplane.svg');
+const airplaneSVG = getExtUrl('airplane.svg');
 
 const { TextArea } = Input;
-
-function getCurrentPageinfo() {
-  // using async await
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(
-      {
-        type: 'page',
-        request: null, // payload
-      },
-      function (data) {
-        console.log('data =>', data);
-        resolve(data);
-      }
-    );
-  });
-}
 
 function CreateDetailPanel(props) {
   const [pageInfo, setPageInfo] = useState({});
@@ -47,6 +34,9 @@ function CreateDetailPanel(props) {
         // form.resetFields();
         console.log('Success:', values);
         // onCreate(values);
+        saveWord(values).then((res) => {
+          console.log('=== view save word =>', res);
+        });
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -55,7 +45,7 @@ function CreateDetailPanel(props) {
 
   useEffect(() => {
     if (props.visible) {
-      getCurrentPageinfo()
+      getPageInfo()
         .then((res) => {
           const { faviconURL, pageId, pageTitle, pageURL } = res;
           setPageInfo({
