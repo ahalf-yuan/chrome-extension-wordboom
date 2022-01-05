@@ -35,7 +35,7 @@ function createWordItem(data) {
 const HOST = 'http://localhost:8080';
 
 function saveWord(body) {
-  return fetch(HOST + '/api/words/create', {
+  return fetch(HOST + '/api/words', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
