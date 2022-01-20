@@ -19,9 +19,12 @@ function createWordItem(data) {
 }
 
 function saveWord(body) {
-  return request('/api/words', {
+  return request('/api/words/create', {
     method: 'POST',
-    body,
+    body: {
+      catalogId: -1,
+      ...body,
+    },
   });
 }
 
